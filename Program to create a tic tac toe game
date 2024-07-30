@@ -1,0 +1,97 @@
+import java.util.Scanner;
+
+public class TicTacToe {
+
+    private static final char EMPTY = ' ';
+    private static final char PLAYER_X = 'X';
+    private static final char PLAYER_O = 'O';
+    private static char currentPlayer = PLAYER_X;
+    private static char[][] board = {
+        {EMPTY, EMPTY, EMPTY},
+        {EMPTY, EMPTY, EMPTY},
+        {EMPTY, EMPTY, EMPTY}
+    };
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean gameOn = true;
+
+        while (gameOn) {
+            printBoard();
+            playerMove(scanner);
+            gameOn = !isGameOver();
+            if (gameOn) {
+                currentPlayer = (currentPlayer == PLAYER_X) ? PLAYER_O : PLAYER_X;
+            }
+        }
+
+        printBoard();
+        if (isWinner(PLAYER_X)) {
+            System.out.println("Player X wins!");
+        } else if (isWinner(PLAYER_O)) {
+            System.out.println("Player O wins!");
+        } else {
+            System.out.println("It's a tie!");
+        }
+
+        scanner.close();
+    }
+
+    private static void printBoard() {
+        System.out.println("  0 1 2");
+        for (int row = 0; row < 3; row++) {
+            System.out.print(row + " ");
+            for (int col = 0; col < 3; col++) {
+                System.out.print(board[row][col]);
+                if (col < 2) {
+                    System.out.print("|");
+                }
+            }
+            System.out.println();
+            if (row < 2) {
+                System.out.println("  -----");
+            }
+        }
+    }
+
+    private static void playerMove(Scanner scanner) {
+        int row, col;
+        while (true) {
+            System.out.println("Player " + currentPlayer + ", enter your move (row and column): ");
+            row = scanner.nextInt();
+            col = scanner.nextInt();
+            if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == EMPTY) {
+                board[row][col] = currentPlayer;
+                break;
+            } else {
+                System.out.println("This move is not valid");
+            }
+        }
+    }
+
+    private static boolean isGameOver() {
+        return isWinner(PLAYER_X) || isWinner(PLAYER_O) || isBoardFull();
+    }
+
+    private static boolean isWinner(char player) {
+        for (int i = 0; i < 3; i++) {
+            if ((board[i][0] == player && board[i][1] == player && board[i][2] == player) || 
+                (board[0][i] == player && board[1][i] == player && board[2][i] == player)) {
+                return true;
+            }
+        }
+        return (board[0][0] == player && board[1][1] == player && board[2][2] == player) ||
+               (board[0][2] == player && board[1][1] == player && board[2][0] == player);
+    }
+
+    private static boolean isBoardFull() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (board[row][col] == EMPTY) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
